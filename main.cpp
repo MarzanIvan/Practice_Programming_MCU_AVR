@@ -10,17 +10,18 @@
 inline void InitPorts() {
 	DDRD = 0xff;
 	PORTD = 0x00;
-	TCCR0B = 0b00000101;
-	TCNT0 = 0x00;
+	TCCR1B = 0b00000010;
+	TCNT1 = 0x00;
 }
 
-inline void delay_ms_by_TimerCounter0( double milliseconds ) {
+inline void delay_ms_by_TimerCounter1B( double milliseconds ) {
 	milliseconds /= 1000;
-	while( milliseconds > 0 ) {
-		if ( TCNT0 == 255 ) {
-			milliseconds -= 0.3264;
+	TCNT1 = 0;
+	while ( milliseconds > 0 ) {
+		if ( !TCNT1L && TCNT1H == 128 ) {
+			milliseconds -= 0.32768;
 		}
-		if ((TCNT0 * 0.00128) >= milliseconds) {
+		if ( (TCNT1 * 0.00001) >= milliseconds ) {
 			break;
 		}
 	}
@@ -29,9 +30,9 @@ inline void delay_ms_by_TimerCounter0( double milliseconds ) {
 int main() { 
 	InitPorts();
 	while (true) {
-		delay_ms_by_TimerCounter0(500);
+		delay_ms_by_TimerCounter1B(500);
 		PORTD |= 1;
-		delay_ms_by_TimerCounter0(500);
+		delay_ms_by_TimerCounter1B(500);
 		PORTD &= 254;
 	}
 }
