@@ -7,8 +7,11 @@
     .org 0x002
     rjmp INT0_ISR
     Reset:
-    ldi temp, 0b00000010
+    ldi temp, 0b00000001
+    out DDRD, temp
+    ldi temp, 0b00000100
     out PORTD, temp
+    rcall ConfigureInterruptINT0
     
     Program:
     
@@ -23,17 +26,23 @@
     ldi temp, 0b00000001
     out EIMSK, temp
     pop temp
-
+    ret
     INT0_ISR:
-    
+    push temp
+    ldi temp, 0b00000001
+    out PORTD, temp
+    pop temp
+    ret
     
     EnableHignPowerOnPD1:
     push temp   ;saving temp to stack
-    ldi temp, 0b00000011
+    ldi temp, 0b00000101
     out PORTD, temp
     pop temp    ;getting saved temp from stack
+    ret
     EnableLowPowerOnPD1:
     push temp   ;saving temp to stack
-    ldi temp, 0b00000001
+    ldi temp, 0b00000100
     out PORTD, temp
     pop temp    ;getting saved temp from stack
+    ret
