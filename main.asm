@@ -23,11 +23,18 @@
     pop temp
 
     INT0:
-    push temp
-    sbic PIND, 1 
-    ldi temp, 0b00000010
-    out PORTD, temp
     
+    
+    EnableHignPowerOnPD1:
+    push temp 
+    ldi temp, 0b00000011
+    out PORTD, temp
+    pop temp
+    EnableLowPowerOnPD1:
+    push temp 
+    ldi temp, 0b00000001
+    out PORTD, temp
+    pop temp
     
 
 
